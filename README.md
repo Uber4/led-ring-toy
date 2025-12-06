@@ -1,7 +1,7 @@
 # Arduino LED toy with neopixel ring and arcade buttons
 
 This project is a simple interactive toy I built for my kids as a Christmas gift, back in 2020. 
-I lost the final version of the original firmware a long time ago, so I created this repository to try to rebuild and recover it as accurately as possible, based on incomplete backups.
+I lost the final version of the original firmware a long time ago, so I created this repository to recover it as accurately as possible, based on some backups.
 It is housed inside a cardboard box and powered by an **Arduino Uno**, featuring a **24-LED Adafruit NeoPixel Ring** and **three arcade-style push buttons**.
 
 The toy uses colors, light patterns, and basic interaction to create different engaging experiences for young children.
@@ -26,27 +26,74 @@ The toy uses colors, light patterns, and basic interaction to create different e
 
 ---
 
-## How It Works
+## How it works: operating modes
 
-Each of the three arcade buttons is connected to a digital input on the Arduino.  
-When pressed, the program triggers a unique animation on the neopixel ring, such as:
+This project includes several operating modes controlled by the `modo` variable.  
+Each mode changes how the NeoPixel strip behaves depending on the user's button inputs.
 
-- Rotating colors  
-- Sparkle effects  
-- Solid color pulses
-- Rainbow chase patterns  
+### Modes overview
 
-The toy is meant to be intuitive: press a button → enjoy the lights.
+| Mode | Name                      | Description |
+|-------|--------------------------|-------------|
+| **0** | **Selector**             | Navigation menu to choose the operating mode. |
+| **1** | **Color mixer**          | Adjust the red, green, and blue LED values to create a custom color. |
+| **2** | **Rainbow**              | Smooth rainbow animation cycling across all LEDs. |
+| **3** | **Theater chase rainbow**| Theater-style chase effect combined with rainbow color cycling. |
+| **4** | **Memory Mode**          | Record a color sequence by pressing R, G, or B. |
 
-On top of that, the sketch implements a very small **menu system**:
+---
 
-- Each button is associated with a specific **mode** or **animation profile**.  
-- Pressing a button changes the current menu selection and updates the active LED effect accordingly.  
-- The selected mode keeps running until another button is pressed and a new mode is chosen.
+## Button functions by mode
+
+### **Mode 0 — Selector**
+- **R Button:** Move to the next mode (cycles through 1 → 4).
+- **G Button:** Confirm the selected mode.
+- One LED lights up in white to show the currently selected mode.
+
+---
+
+### **Mode 1 — color mixer**
+Create a custom RGB color:
+
+| Button | Action |
+|--------|--------|
+| **R Button** | Increase Red component (0 → 250 → reset to 0) |
+| **G Button** | Increase Green component (increments of 50) |
+| **B Button** | Increase Blue component (increments of 50) |
+
+The entire LED strip updates to the combined RGB color after each button press.
+
+---
+
+### **Mode 2 — Rainbow**
+- Displays a continuous rainbow cycle.
+- Smoothly transitions all LEDs through the full color spectrum.
+- Can be interrupted using the button reset combination.
+
+---
+
+### **Mode 3 — Theater chase rainbow**
+- Produces a theater-style “moving lights” effect.
+- Lights every third LED and shifts colors using the rainbow wheel.
+- Repeats until the reset combo is activated.
+
+---
+
+### **Mode 4 — Memory mode**
+Create a sequence of 24 color entries, one per LED:
+
+| Button       | Color Assigned |
+|--------------|----------------|
+| **R Button** | Red (100, 0, 0) |
+| **G Button** | Green (0, 100, 0) |
+| **B Button** | Blue (0, 0, 100) |
+
+- Each button press writes the corresponding color to the next LED.
+- Once all 24 LEDs are filled, the strip clears and the sequence resets.
 
 To make it easy to “start over”, there is also a **reset gesture**:
 
-- When **all three buttons are pressed at the same time**, it resets the internal state and returns to the **default mode**, as if the toy had just been powered on.
+- When **all three buttons are pressed at the same time**, it returns to **mode 0**, as if the toy had just been powered on.
 
 ---
 
